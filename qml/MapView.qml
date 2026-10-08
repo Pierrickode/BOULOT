@@ -14,8 +14,8 @@ Item {
 
         plugin: Plugin {
             name: "osm"
-            PluginParameter { name: "osm.mapping.providerserial", value: "1" }
-            PluginParameter { name: "osm.useragent", value: "AppliGPS i.MX8 Automotive Navigation" }
+            PluginParameter { name: "osm.mapping.providerserial"; value: "1" }
+            PluginParameter { name: "osm.useragent"; value: "AppliGPS i.MX8 Automotive Navigation" }
         }
 
         center: navCtrl.gpsProvider.currentPosition
@@ -26,13 +26,22 @@ Item {
             id: routePolyline
             line.width: 5
             line.color: "#007ACC"
-            path: {
-                var coords = [];
+
+            function updatePath() {
+                routePolyline.path = [];
                 for (var i = 0; i < navCtrl.waypointModel.rowCount(); i++) {
                     var wpt = navCtrl.waypointModel.getWaypoint(i);
-                    coords.push(QtPositioning.coordinate(wpt.latitude, wpt.longitude));
+                    routePolyline.addCoordinate(QtPositioning.coordinate(wpt.latitude, wpt.longitude));
                 }
-                return coords;
+            }
+
+            Component.onCompleted: updatePath()
+
+            Connections {
+                target: navCtrl.waypointModel
+                function onWaypointsChanged() {
+                    routePolyline.updatePath();
+                }
             }
         }
 
@@ -40,7 +49,7 @@ Item {
         MapItemView {
             model: navCtrl.waypointModel
             delegate: MapQuickItem {
-                coordinate: QtPositioning.coordinate(model.latitude, model.longitude)
+                coordinate: QtPositioning.coordinate(latitude, longitude)
                 anchorPoint.x: markerBubble.width / 2
                 anchorPoint.y: markerBubble.height
 
@@ -49,14 +58,14 @@ Item {
                     width: Math.max(32, markerText.implicitWidth + 16)
                     height: 32
                     radius: 16
-                    color: index === 0 ? "#27AE60" : (index === navCtrl.waypointModel.rowCount() - 1 ? "#C0392B" : "#2980B9")
+                    color: index === 0 ? "#27AE60" : (index === (navCtrl.waypointModel.rowCount() - 1) ? "#C0392B" : "#2980B9")
                     border.color: "#FFFFFF"
                     border.width: 2
 
                     Text {
                         id: markerText
                         anchors.centerIn: parent
-                        text: (index + 1) + ". " + model.name
+                        text: (index + 1) + ". " + name
                         color: "#FFFFFF"
                         font.pixelSize: 12
                         font.bold: true
@@ -105,7 +114,7 @@ Item {
         // Tap on map to add waypoint
         MouseArea {
             anchors.fill: parent
-            onDoubleClicked: (mouse) => {
+            onDoubleClicked: function(mouse) {
                 var coord = map.toCoordinate(Qt.point(mouse.x, mouse.y));
                 navCtrl.addWaypointByCoordinate(coord.latitude, coord.longitude, "");
             }

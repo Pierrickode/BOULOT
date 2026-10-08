@@ -4,6 +4,7 @@
 #include <QString>
 #include <QGeoCoordinate>
 #include <QJsonObject>
+#include <QMetaType>
 
 struct Waypoint {
     QString id;
@@ -43,5 +44,7 @@ struct Waypoint {
         );
     }
 };
+
+Q_DECLARE_METATYPE(Waypoint)
 
 #endif // WAYPOINT_H
