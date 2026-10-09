@@ -16,30 +16,38 @@ Item {
             name: "osm"
             PluginParameter { name: "osm.mapping.providerserial"; value: "1" }
             PluginParameter { name: "osm.useragent"; value: "AppliGPS i.MX8 Automotive Navigation" }
+            PluginParameter { name: "osm.mapping.cache.directory"; value: navCtrl.tileCacheDirectory }
+            PluginParameter { name: "osm.mapping.cache.disk.size"; value: "100000000" }
+            PluginParameter { name: "osm.mapping.offline.directory"; value: navCtrl.offlineMapDirectory }
         }
 
         center: navCtrl.gpsProvider.currentPosition
         zoomLevel: 12
 
-        // Map Polyline route connecting all waypoints
+        // Map Polyline route following roads
         MapPolyline {
             id: routePolyline
-            line.width: 5
-            line.color: "#007ACC"
+            line.width: 6
+            line.color: "#00B0FF"
 
             function updatePath() {
-                routePolyline.path = [];
-                for (var i = 0; i < navCtrl.waypointModel.rowCount(); i++) {
-                    var wpt = navCtrl.waypointModel.getWaypoint(i);
-                    routePolyline.addCoordinate(QtPositioning.coordinate(wpt.latitude, wpt.longitude));
+                var roadCoords = navCtrl.roadPathCoordinates;
+                if (roadCoords && roadCoords.length > 0) {
+                    routePolyline.path = roadCoords;
+                } else {
+                    routePolyline.path = [];
+                    for (var i = 0; i < navCtrl.waypointModel.rowCount(); i++) {
+                        var wpt = navCtrl.waypointModel.getWaypoint(i);
+                        routePolyline.addCoordinate(QtPositioning.coordinate(wpt.latitude, wpt.longitude));
+                    }
                 }
             }
 
             Component.onCompleted: updatePath()
 
             Connections {
-                target: navCtrl.waypointModel
-                function onWaypointsChanged() {
+                target: navCtrl
+                function onRouteUpdated() {
                     routePolyline.updatePath();
                 }
             }
@@ -111,12 +119,17 @@ Item {
             }
         }
 
-        // Tap on map to add waypoint
+        // Long press on map to add waypoint
         MouseArea {
             anchors.fill: parent
-            onDoubleClicked: function(mouse) {
+            preventStealing: false
+            pressAndHoldInterval: 600
+
+            onPressAndHold: function(mouse) {
                 var coord = map.toCoordinate(Qt.point(mouse.x, mouse.y));
-                navCtrl.addWaypointByCoordinate(coord.latitude, coord.longitude, "");
+                if (coord.isValid) {
+                    navCtrl.addWaypointByCoordinate(coord.latitude, coord.longitude, "");
+                }
             }
         }
     }

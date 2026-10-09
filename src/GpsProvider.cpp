@@ -31,8 +31,14 @@ void GpsProvider::startLivePositioning() {
 }
 
 void GpsProvider::startSimulation(const QList<Waypoint> &route, double speedKmh) {
-    if (route.count() < 2) {
-        qWarning() << "Cannot start simulation with fewer than 2 waypoints";
+    QList<QGeoCoordinate> coords;
+    for (const auto &w : route) coords.append(w.coordinate());
+    startSimulationCoordinates(coords, speedKmh);
+}
+
+void GpsProvider::startSimulationCoordinates(const QList<QGeoCoordinate> &pathCoords, double speedKmh) {
+    if (pathCoords.count() < 2) {
+        qWarning() << "Cannot start simulation with fewer than 2 coordinates";
         return;
     }
 
@@ -40,14 +46,14 @@ void GpsProvider::startSimulation(const QList<Waypoint> &route, double speedKmh)
         m_posSource->stopUpdates();
     }
 
-    m_simRoute = route;
+    m_simCoords = pathCoords;
     m_simBaseSpeedKmh = speedKmh;
     m_simCurrentSegment = 0;
     m_simProgressInSegment = 0.0;
 
-    m_currentPosition = route.first().coordinate();
+    m_currentPosition = pathCoords.first();
     m_currentSpeedKmh = speedKmh * m_simMultiplier;
-    m_currentHeading = RouteEngine::calculateBearingDegrees(route[0].coordinate(), route[1].coordinate());
+    m_currentHeading = RouteEngine::calculateBearingDegrees(pathCoords[0], pathCoords[1]);
 
     emit positionChanged(m_currentPosition);
     emit speedChanged(m_currentSpeedKmh);
@@ -121,19 +127,19 @@ void GpsProvider::onPositionUpdated(const QGeoPositionInfo &info) {
 }
 
 void GpsProvider::onSimulationStep() {
-    if (!m_isSimulating || m_simRoute.count() < 2) return;
+    if (!m_isSimulating || m_simCoords.count() < 2) return;
 
-    if (m_simCurrentSegment >= m_simRoute.count() - 1) {
+    if (m_simCurrentSegment >= m_simCoords.count() - 1) {
         stopSimulation();
         emit simulationFinished();
         return;
     }
 
-    const QGeoCoordinate &p1 = m_simRoute[m_simCurrentSegment].coordinate();
-    const QGeoCoordinate &p2 = m_simRoute[m_simCurrentSegment + 1].coordinate();
+    const QGeoCoordinate &p1 = m_simCoords[m_simCurrentSegment];
+    const QGeoCoordinate &p2 = m_simCoords[m_simCurrentSegment + 1];
 
     double segmentDistMeters = RouteEngine::calculateDistanceMeters(p1, p2);
-    if (segmentDistMeters <= 1.0) {
+    if (segmentDistMeters <= 0.5) {
         m_simCurrentSegment++;
         m_simProgressInSegment = 0.0;
         onSimulationStep();
@@ -149,8 +155,8 @@ void GpsProvider::onSimulationStep() {
     if (m_simProgressInSegment >= 1.0) {
         m_simCurrentSegment++;
         m_simProgressInSegment = 0.0;
-        if (m_simCurrentSegment >= m_simRoute.count() - 1) {
-            m_currentPosition = m_simRoute.last().coordinate();
+        if (m_simCurrentSegment >= m_simCoords.count() - 1) {
+            m_currentPosition = m_simCoords.last();
             emit positionChanged(m_currentPosition);
             stopSimulation();
             emit simulationFinished();
@@ -158,8 +164,8 @@ void GpsProvider::onSimulationStep() {
         }
     }
 
-    const QGeoCoordinate &start = m_simRoute[m_simCurrentSegment].coordinate();
-    const QGeoCoordinate &end = m_simRoute[m_simCurrentSegment + 1].coordinate();
+    const QGeoCoordinate &start = m_simCoords[m_simCurrentSegment];
+    const QGeoCoordinate &end = m_simCoords[m_simCurrentSegment + 1];
 
     double curLat = start.latitude() + (end.latitude() - start.latitude()) * m_simProgressInSegment;
     double curLon = start.longitude() + (end.longitude() - start.longitude()) * m_simProgressInSegment;

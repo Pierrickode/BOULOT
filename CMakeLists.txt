@@ -13,6 +13,7 @@ set(SOURCES
     src/GpxHandler.cpp
     src/RouteEngine.cpp
     src/GpsProvider.cpp
+    src/LanguageManager.cpp
     src/NavigationController.cpp
 )
 
@@ -22,6 +23,7 @@ set(HEADERS
     src/GpxHandler.h
     src/RouteEngine.h
     src/GpsProvider.h
+    src/LanguageManager.h
     src/NavigationController.h
 )
 

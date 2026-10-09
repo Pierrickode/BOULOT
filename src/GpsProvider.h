@@ -25,6 +25,7 @@ public:
 
     Q_INVOKABLE void startLivePositioning();
     Q_INVOKABLE void startSimulation(const QList<Waypoint> &route, double speedKmh = 60.0);
+    Q_INVOKABLE void startSimulationCoordinates(const QList<QGeoCoordinate> &pathCoords, double speedKmh = 60.0);
     Q_INVOKABLE void pauseSimulation();
     Q_INVOKABLE void stopSimulation();
     Q_INVOKABLE void setSimulationSpeed(double speedMultiplier);
@@ -52,6 +53,7 @@ private:
     // Simulation variables
     QTimer *m_simTimer{nullptr};
     QList<Waypoint> m_simRoute;
+    QList<QGeoCoordinate> m_simCoords;
     int m_simCurrentSegment{0};
     double m_simProgressInSegment{0.0}; // 0.0 to 1.0
     double m_simBaseSpeedKmh{60.0};

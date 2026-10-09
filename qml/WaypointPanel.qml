@@ -9,7 +9,7 @@ Rectangle {
 
     FileDialog {
         id: importGpxDialog
-        title: "Importer un fichier GPX"
+        title: navCtrl.langMgr.t("import_gpx")
         nameFilters: ["Fichiers GPX (*.gpx)", "Tous les fichiers (*)"]
         selectExisting: true
         onAccepted: {
@@ -19,7 +19,7 @@ Rectangle {
 
     FileDialog {
         id: exportGpxDialog
-        title: "Exporter le parcours en GPX"
+        title: navCtrl.langMgr.t("export_gpx")
         nameFilters: ["Fichiers GPX (*.gpx)"]
         selectExisting: false
         onAccepted: {
@@ -32,8 +32,31 @@ Rectangle {
         anchors.margins: 12
         spacing: 10
 
+        // Language Selector Row
+        RowLayout {
+            Layout.fillWidth: true
+            spacing: 5
+
+            Text {
+                text: navCtrl.langMgr.t("language")
+                color: "#CCCCCC"
+                font.pixelSize: 13
+                font.bold: true
+            }
+
+            ComboBox {
+                Layout.fillWidth: true
+                model: navCtrl.langMgr.languageNames
+                currentIndex: navCtrl.langMgr.currentLanguageIndex
+                onActivated: {
+                    var codes = ["fr", "en", "ar", "nl"]
+                    navCtrl.langMgr.setLanguage(codes[index])
+                }
+            }
+        }
+
         Text {
-            text: "Points de Navigation"
+            text: navCtrl.langMgr.t("waypoints_title")
             color: "#FFFFFF"
             font.pixelSize: 18
             font.bold: true
@@ -126,25 +149,25 @@ Rectangle {
             columnSpacing: 8
 
             Button {
-                text: "Demo Route"
+                text: navCtrl.langMgr.t("demo_route")
                 Layout.fillWidth: true
                 onClicked: navCtrl.loadDefaultDemoRoute()
             }
 
             Button {
-                text: "Effacer Tout"
+                text: navCtrl.langMgr.t("clear_all")
                 Layout.fillWidth: true
                 onClicked: navCtrl.waypointModel.clear()
             }
 
             Button {
-                text: "Importer GPX"
+                text: navCtrl.langMgr.t("import_gpx")
                 Layout.fillWidth: true
                 onClicked: importGpxDialog.open()
             }
 
             Button {
-                text: "Exporter GPX"
+                text: navCtrl.langMgr.t("export_gpx")
                 Layout.fillWidth: true
                 onClicked: exportGpxDialog.open()
             }

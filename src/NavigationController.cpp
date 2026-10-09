@@ -2,12 +2,15 @@
 #include "GpxHandler.h"
 #include "RouteEngine.h"
 #include <QUrl>
+#include <QStandardPaths>
+#include <QDir>
 #include <QDebug>
 
 NavigationController::NavigationController(QObject *parent)
     : QObject(parent),
       m_waypointModel(new WaypointModel(this)),
-      m_gpsProvider(new GpsProvider(this)) {
+      m_gpsProvider(new GpsProvider(this)),
+      m_langMgr(new LanguageManager(this)) {
 
     connect(m_waypointModel, &WaypointModel::waypointsChanged, this, &NavigationController::updateRouteCalculations);
     connect(m_gpsProvider, &GpsProvider::positionChanged, this, &NavigationController::updateNavigationState);
@@ -34,6 +37,26 @@ QString NavigationController::formattedDistanceToNext() const {
 
 QString NavigationController::compassDirection() const {
     return RouteEngine::compassDirection(m_bearingToNext);
+}
+
+QString NavigationController::tileCacheDirectory() const {
+    QString cacheDir = QStandardPaths::writableLocation(QStandardPaths::CacheLocation) + "/tiles";
+    QDir().mkpath(cacheDir);
+    return cacheDir;
+}
+
+QString NavigationController::offlineMapDirectory() const {
+    QString offlineDir = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + "/maps";
+    QDir().mkpath(offlineDir);
+    return offlineDir;
+}
+
+QVariantList NavigationController::roadPathCoordinates() const {
+    QVariantList list;
+    for (const auto &coord : m_roadPath) {
+        list.append(QVariant::fromValue(coord));
+    }
+    return list;
 }
 
 bool NavigationController::loadGpxFile(const QString &filePath) {
@@ -82,7 +105,11 @@ void NavigationController::startSimulation(double speedKmh) {
         return;
     }
 
-    m_gpsProvider->startSimulation(m_waypointModel->waypoints(), speedKmh);
+    if (m_roadPath.count() >= 2) {
+        m_gpsProvider->startSimulationCoordinates(m_roadPath, speedKmh);
+    } else {
+        m_gpsProvider->startSimulation(m_waypointModel->waypoints(), speedKmh);
+    }
     emit statusMessage("Simulation GPS démarrée", false);
 }
 
@@ -96,7 +123,12 @@ void NavigationController::loadDefaultDemoRoute() {
 }
 
 void NavigationController::updateRouteCalculations() {
-    m_totalDistanceMeters = RouteEngine::calculateTotalDistanceMeters(m_waypointModel->waypoints());
+    m_roadPath = RouteEngine::calculateShortestRoadRoute(m_waypointModel->waypoints());
+    if (m_roadPath.count() >= 2) {
+        m_totalDistanceMeters = RouteEngine::calculatePathDistanceMeters(m_roadPath);
+    } else {
+        m_totalDistanceMeters = RouteEngine::calculateTotalDistanceMeters(m_waypointModel->waypoints());
+    }
     emit routeUpdated();
     updateNavigationState();
 }

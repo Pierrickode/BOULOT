@@ -50,7 +50,7 @@ Item {
                 RowLayout {
                     spacing: 8
                     Text {
-                        text: "PROCHAIN POINT:"
+                        text: navCtrl.langMgr.t("next_point")
                         color: "#888888"
                         font.pixelSize: 11
                         font.bold: true
@@ -67,13 +67,13 @@ Item {
                 RowLayout {
                     spacing: 15
                     Text {
-                        text: "Distance: " + navCtrl.formattedDistanceToNext
+                        text: navCtrl.langMgr.t("distance") + " " + navCtrl.formattedDistanceToNext
                         color: "#00B0FF"
                         font.pixelSize: 14
                         font.bold: true
                     }
                     Text {
-                        text: "Cap: " + Math.round(navCtrl.bearingToNext) + "° (" + navCtrl.compassDirection + ")"
+                        text: navCtrl.langMgr.t("bearing") + " " + Math.round(navCtrl.bearingToNext) + "° (" + navCtrl.compassDirection + ")"
                         color: "#FFAB00"
                         font.pixelSize: 14
                         font.bold: true
@@ -92,13 +92,13 @@ Item {
                 spacing: 4
 
                 Text {
-                    text: "Total: " + navCtrl.formattedTotalDistance
+                    text: navCtrl.langMgr.t("total_distance") + " " + navCtrl.formattedTotalDistance
                     color: "#FFFFFF"
                     font.pixelSize: 14
                 }
 
                 Text {
-                    text: "ETA: " + navCtrl.formattedETA
+                    text: navCtrl.langMgr.t("eta") + " " + navCtrl.formattedETA
                     color: "#E0E0E0"
                     font.pixelSize: 14
                 }

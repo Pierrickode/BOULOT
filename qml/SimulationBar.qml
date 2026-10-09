@@ -14,14 +14,14 @@ Rectangle {
         spacing: 15
 
         Text {
-            text: "Simulation GPS:"
+            text: navCtrl.langMgr.t("simulation_gps")
             color: "#FFFFFF"
             font.pixelSize: 14
             font.bold: true
         }
 
         Button {
-            text: navCtrl.gpsProvider.isSimulating ? "Pause / Play" : "Démarrer"
+            text: navCtrl.gpsProvider.isSimulating ? navCtrl.langMgr.t("pause_play") : navCtrl.langMgr.t("start")
             onClicked: {
                 if (navCtrl.gpsProvider.isSimulating) {
                     navCtrl.gpsProvider.pauseSimulation();
@@ -32,13 +32,13 @@ Rectangle {
         }
 
         Button {
-            text: "Stopper"
+            text: navCtrl.langMgr.t("stop")
             enabled: navCtrl.gpsProvider.isSimulating
             onClicked: navCtrl.gpsProvider.stopSimulation()
         }
 
         Text {
-            text: "Vitesse:"
+            text: navCtrl.langMgr.t("speed_label")
             color: "#CCCCCC"
             font.pixelSize: 12
         }

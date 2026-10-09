@@ -2,6 +2,7 @@
 #include "../src/WaypointModel.h"
 #include "../src/GpxHandler.h"
 #include "../src/RouteEngine.h"
+#include "../src/LanguageManager.h"
 #include "../src/NavigationController.h"
 #include <QTemporaryFile>
 
@@ -13,6 +14,8 @@ private slots:
     void testGpxExportAndImport();
     void testRouteEngineGeodesic();
     void testNavigationControllerLogic();
+    void testLanguageManager();
+    void testRoadRoutingEngine();
 };
 
 void TestNavigation::testWaypointModelCRUD() {
@@ -91,6 +94,36 @@ void TestNavigation::testNavigationControllerLogic() {
 
     controller.gpsProvider()->stopSimulation();
     QVERIFY(!controller.gpsProvider()->isSimulating());
+}
+
+void TestNavigation::testLanguageManager() {
+    LanguageManager langMgr;
+    QCOMPARE(langMgr.currentLanguage(), QString("fr"));
+    QCOMPARE(langMgr.t("waypoints_title"), QString("Points de Navigation"));
+
+    langMgr.setLanguage("en");
+    QCOMPARE(langMgr.currentLanguage(), QString("en"));
+    QCOMPARE(langMgr.t("waypoints_title"), QString("Navigation Waypoints"));
+
+    langMgr.setLanguage("ar");
+    QCOMPARE(langMgr.currentLanguage(), QString("ar"));
+    QVERIFY(langMgr.isRightToLeft());
+
+    langMgr.setLanguage("nl");
+    QCOMPARE(langMgr.currentLanguage(), QString("nl"));
+    QCOMPARE(langMgr.t("waypoints_title"), QString("Navigatiepunten"));
+}
+
+void TestNavigation::testRoadRoutingEngine() {
+    QList<Waypoint> wpts;
+    wpts.append(Waypoint("1", "Paris Notre-Dame", 48.8530, 2.3499));
+    wpts.append(Waypoint("2", "Fontainebleau", 48.4022, 2.7006));
+
+    QList<QGeoCoordinate> path = RouteEngine::calculateShortestRoadRoute(wpts);
+    QVERIFY(path.count() > 2); // Should contain intermediate road nodes and interpolated path steps
+
+    double pathDist = RouteEngine::calculatePathDistanceMeters(path);
+    QVERIFY(pathDist > 50000.0); // Paris to Fontainebleau is ~65-70km along roads
 }
 
 QTEST_MAIN(TestNavigation)
