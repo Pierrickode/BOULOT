@@ -10,7 +10,8 @@ NavigationController::NavigationController(QObject *parent)
     : QObject(parent),
       m_waypointModel(new WaypointModel(this)),
       m_gpsProvider(new GpsProvider(this)),
-      m_langMgr(new LanguageManager(this)) {
+      m_langMgr(new LanguageManager(this)),
+      m_searchMgr(new LocationSearchManager(this)) {
 
     connect(m_waypointModel, &WaypointModel::waypointsChanged, this, &NavigationController::updateRouteCalculations);
     connect(m_gpsProvider, &GpsProvider::positionChanged, this, &NavigationController::updateNavigationState);

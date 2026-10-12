@@ -63,6 +63,75 @@ Rectangle {
             Layout.alignment: Qt.AlignHCenter
         }
 
+        // Locality Search Input
+        ColumnLayout {
+            Layout.fillWidth: true
+            spacing: 2
+
+            TextField {
+                id: searchInput
+                Layout.fillWidth: true
+                placeholderText: navCtrl.langMgr.t("search_placeholder")
+                color: "#FFFFFF"
+                background: Rectangle {
+                    color: "#333337"
+                    radius: 4
+                    border.color: searchInput.activeFocus ? "#3498DB" : "#555555"
+                }
+                onTextChanged: {
+                    searchResultsList.model = navCtrl.searchMgr.searchLocalities(text, 6)
+                }
+            }
+
+            // Search Results Popup Overlay
+            ListView {
+                id: searchResultsList
+                Layout.fillWidth: true
+                implicitHeight: Math.min(contentHeight, 150)
+                visible: searchInput.text.length > 0 && count > 0
+                clip: true
+                spacing: 2
+
+                delegate: Rectangle {
+                    width: searchResultsList.width
+                    height: 36
+                    color: searchMouseArea.containsMouse ? "#34495E" : "#2C3E50"
+                    radius: 4
+
+                    RowLayout {
+                        anchors.fill: parent
+                        anchors.margins: 6
+
+                        Text {
+                            text: modelData.name + " (" + modelData.region + ")"
+                            color: "#FFFFFF"
+                            font.pixelSize: 12
+                            font.bold: true
+                            Layout.fillWidth: true
+                            elide: Text.ElideRight
+                        }
+
+                        Text {
+                            text: "+ Ajouter"
+                            color: "#2ECC71"
+                            font.pixelSize: 11
+                            font.bold: true
+                        }
+                    }
+
+                    MouseArea {
+                        id: searchMouseArea
+                        anchors.fill: parent
+                        hoverEnabled: true
+                        onClicked: {
+                            navCtrl.addWaypointByCoordinate(modelData.latitude, modelData.longitude, modelData.name)
+                            searchInput.text = ""
+                        }
+                    }
+                }
+            }
+        }
+
         ListView {
             id: listView
             Layout.fillWidth: true

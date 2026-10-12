@@ -55,6 +55,8 @@ void LanguageManager::initTranslations() {
     fr["destination_reached"] = "Destination atteinte";
     fr["long_press_add"] = "Appuyez longuement sur la carte pour ajouter un point";
     fr["shortest_road_route"] = "Mode: Court par Route";
+    fr["search_locality"] = "Rechercher une localité";
+    fr["search_placeholder"] = "Rechercher une ville...";
 
     // English (en)
     auto &en = m_translations["en"];
@@ -79,6 +81,8 @@ void LanguageManager::initTranslations() {
     en["destination_reached"] = "Destination reached";
     en["long_press_add"] = "Long press on map to add waypoint";
     en["shortest_road_route"] = "Mode: Shortest Road Route";
+    en["search_locality"] = "Search locality";
+    en["search_placeholder"] = "Search a city...";
 
     // Arabic (ar)
     auto &ar = m_translations["ar"];
@@ -103,6 +107,8 @@ void LanguageManager::initTranslations() {
     ar["destination_reached"] = "تم الوصول إلى الوجهة";
     ar["long_press_add"] = "اضغط مطولاً على الخريطة لإضافة نقطة";
     ar["shortest_road_route"] = "المسار الأقصر عبر الطرق";
+    ar["search_locality"] = "البحث عن مدينة";
+    ar["search_placeholder"] = "ابحث عن مدينة...";
 
     // Dutch (nl)
     auto &nl = m_translations["nl"];
@@ -127,4 +133,6 @@ void LanguageManager::initTranslations() {
     nl["destination_reached"] = "Bestemming bereikt";
     nl["long_press_add"] = "Druk lang op de kaart om een punt toe te voegen";
     nl["shortest_road_route"] = "Route: Kortste Weg";
+    nl["search_locality"] = "Zoek plaats";
+    nl["search_placeholder"] = "Zoek een stad...";
 }

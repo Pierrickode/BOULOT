@@ -3,6 +3,7 @@
 #include "../src/GpxHandler.h"
 #include "../src/RouteEngine.h"
 #include "../src/LanguageManager.h"
+#include "../src/LocationSearchManager.h"
 #include "../src/NavigationController.h"
 #include <QTemporaryFile>
 
@@ -16,6 +17,7 @@ private slots:
     void testNavigationControllerLogic();
     void testLanguageManager();
     void testRoadRoutingEngine();
+    void testLocalitySearch();
 };
 
 void TestNavigation::testWaypointModelCRUD() {
@@ -124,6 +126,16 @@ void TestNavigation::testRoadRoutingEngine() {
 
     double pathDist = RouteEngine::calculatePathDistanceMeters(path);
     QVERIFY(pathDist > 50000.0); // Paris to Fontainebleau is ~65-70km along roads
+}
+
+void TestNavigation::testLocalitySearch() {
+    LocationSearchManager searchMgr;
+    QVariantList results = searchMgr.searchLocalities("Paris", 5);
+    QVERIFY(results.count() > 0);
+
+    QVariantMap first = results[0].toMap();
+    QVERIFY(first["name"].toString().contains("Paris"));
+    QVERIFY(first["latitude"].toDouble() > 0.0);
 }
 
 QTEST_MAIN(TestNavigation)

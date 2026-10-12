@@ -14,6 +14,7 @@ set(SOURCES
     src/RouteEngine.cpp
     src/GpsProvider.cpp
     src/LanguageManager.cpp
+    src/LocationSearchManager.cpp
     src/NavigationController.cpp
 )
 
@@ -24,6 +25,7 @@ set(HEADERS
     src/RouteEngine.h
     src/GpsProvider.h
     src/LanguageManager.h
+    src/LocationSearchManager.h
     src/NavigationController.h
 )
 

@@ -115,27 +115,45 @@ int RouteEngine::findNextWaypointIndex(const QGeoCoordinate &currentPos, const Q
 void RouteEngine::initRoadNetwork() {
     if (s_initialized) return;
 
+    // Detailed road graph network covering Île-de-France highways (A1, A6, A10, A13, A86, N118)
     s_nodes = {
-        {0, QGeoCoordinate(48.8530, 2.3499), "Paris Ctr"},
-        {1, QGeoCoordinate(48.8385, 2.2570), "Paris West"},
-        {2, QGeoCoordinate(48.8100, 2.1300), "Versailles N"},
-        {3, QGeoCoordinate(48.8049, 2.1204), "Versailles S"},
-        {4, QGeoCoordinate(48.8010, 2.0650), "Saint-Cyr"},
-        {5, QGeoCoordinate(48.6440, 1.8320), "Rambouillet"},
-        {6, QGeoCoordinate(48.7250, 2.2720), "Massy"},
-        {7, QGeoCoordinate(48.7262, 2.3652), "Orly Airport"},
-        {8, QGeoCoordinate(48.6238, 2.4439), "Evry"},
-        {9, QGeoCoordinate(48.4022, 2.7006), "Fontainebleau"},
-        {10, QGeoCoordinate(48.5393, 2.6611), "Melun"},
-        {11, QGeoCoordinate(48.7833, 2.4667), "Creteil"},
-        {12, QGeoCoordinate(48.8333, 2.2500), "Boulogne"},
-        {13, QGeoCoordinate(48.9356, 2.3539), "Saint-Denis"}
+        {0, QGeoCoordinate(48.8530, 2.3499), "Paris Centre (Notre-Dame)"},
+        {1, QGeoCoordinate(48.8410, 2.2810), "Paris Porte de St-Cloud (A13)"},
+        {2, QGeoCoordinate(48.8280, 2.3020), "Paris Porte d'Orléans (N20/A6)"},
+        {3, QGeoCoordinate(48.8190, 2.3610), "Paris Porte d'Italie (A6b)"},
+        {4, QGeoCoordinate(48.8250, 2.3880), "Paris Porte de Bercy (A4)"},
+        {5, QGeoCoordinate(48.8990, 2.3560), "Paris Porte de la Chapelle (A1)"},
+        {6, QGeoCoordinate(48.8333, 2.2500), "Boulogne-Billancourt Pont de Sèvres"},
+        {7, QGeoCoordinate(48.8150, 2.2150), "Sèvres N118 Interchange"},
+        {8, QGeoCoordinate(48.8050, 2.1900), "Meudon N118"},
+        {9, QGeoCoordinate(48.7750, 2.2050), "Vélizy-Villacoublay A86/N118"},
+        {10, QGeoCoordinate(48.8080, 2.1500), "Versailles East (A13/D185)"},
+        {11, QGeoCoordinate(48.8049, 2.1204), "Château de Versailles"},
+        {12, QGeoCoordinate(48.8010, 2.0650), "Saint-Cyr-l'École N12"},
+        {13, QGeoCoordinate(48.6440, 1.8320), "Rambouillet N10"},
+        {14, QGeoCoordinate(48.7300, 2.2220), "Bièvres N118"},
+        {15, QGeoCoordinate(48.7250, 2.2720), "Massy-Palaiseau A10/A86"},
+        {16, QGeoCoordinate(48.6880, 2.2520), "Longjumeau A10"},
+        {17, QGeoCoordinate(48.7262, 2.3652), "Aéroport Orly A6/A106"},
+        {18, QGeoCoordinate(48.7833, 2.4667), "Créteil A86/TVM"},
+        {19, QGeoCoordinate(48.6238, 2.4439), "Évry-Courcouronnes A6"},
+        {20, QGeoCoordinate(48.5393, 2.6611), "Melun A6/N105"},
+        {21, QGeoCoordinate(48.4022, 2.7006), "Fontainebleau A6/N7"},
+        {22, QGeoCoordinate(48.9356, 2.3539), "Saint-Denis A1/A86"},
+        {23, QGeoCoordinate(49.0097, 2.5479), "Aéroport Roissy CDG A1"}
     };
 
     QList<QPair<int, int>> connections = {
-        {0, 1}, {1, 12}, {12, 2}, {2, 3}, {3, 4}, {4, 5},
-        {3, 6}, {0, 7}, {6, 7}, {7, 8}, {8, 10}, {10, 9},
-        {0, 11}, {11, 8}, {0, 13}
+        // Paris ring connectors
+        {0, 1}, {0, 2}, {0, 3}, {0, 4}, {0, 5},
+        // Boulevard Périphérique / Boulogne
+        {1, 6}, {6, 7}, {7, 8}, {8, 9}, {9, 10}, {10, 11}, {11, 12}, {12, 13},
+        // N118 / Massy / A10
+        {9, 14}, {14, 15}, {15, 16}, {15, 17},
+        // A6 / Orly / Évry / Fontainebleau
+        {2, 17}, {3, 17}, {17, 18}, {17, 19}, {19, 20}, {20, 21}, {16, 19},
+        // North A1 / Roissy
+        {5, 22}, {22, 23}
     };
 
     for (const auto &conn : connections) {
