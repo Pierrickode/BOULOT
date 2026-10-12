@@ -25,7 +25,10 @@ AppliGPS permet la gestion complète de points de navigation (waypoints), le cal
 ### 2.3 Méthodes de Cross-Compilation
 1. **Via CMake et Toolchain File** :
    ```bash
-   cmake -B build_aarch64 -DCMAKE_TOOLCHAIN_FILE=cmake/aarch64-toolchain.cmake
+   # Si Qt5Config.cmake n'est pas dans le chemin système standard, spécifiez CMAKE_PREFIX_PATH ou Qt5_DIR :
+   cmake -B build_aarch64 \
+         -DCMAKE_TOOLCHAIN_FILE=cmake/aarch64-toolchain.cmake \
+         -DCMAKE_PREFIX_PATH=/usr/lib/aarch64-linux-gnu/cmake
    cmake --build build_aarch64 -j$(nproc)
    ```
 2. **Via Yocto eSDK** :
