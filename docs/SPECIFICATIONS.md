@@ -19,8 +19,25 @@ AppliGPS permet la gestion complète de points de navigation (waypoints), le cal
 ### 2.2 Chaîne de Compilation & Outils
 * **Langage C++** : C++17
 * **Framework Qt** : Qt 5.15+ (Qt Core, Qt GUI, Qt Quick, Qt Positioning, Qt Location, Qt Network, Qt Test).
-* **Système de Build** : CMake (>= 3.16)
+* **Système de Build** : CMake (>= 3.16) avec fichier toolchain dédié (`cmake/aarch64-toolchain.cmake`)
 * **Toolchain de Cross-Compilation** : `aarch64-linux-gnu-g++` / `aarch64-poky-linux-g++`
+
+### 2.3 Méthodes de Cross-Compilation
+1. **Via CMake et Toolchain File** :
+   ```bash
+   cmake -B build_aarch64 -DCMAKE_TOOLCHAIN_FILE=cmake/aarch64-toolchain.cmake
+   cmake --build build_aarch64 -j$(nproc)
+   ```
+2. **Via Yocto eSDK** :
+   ```bash
+   source /opt/poky/3.1/environment-setup-aarch64-poky-linux
+   cmake -B build_yocto -DCMAKE_TOOLCHAIN_FILE=$OECORE_NATIVE_SYSROOT/usr/share/cmake/OECMAKE_TARGET_TOOLCHAIN_FILE
+   cmake --build build_yocto -j$(nproc)
+   ```
+3. **Via Recette BitBake (`meta-appligps`)** :
+   ```bash
+   bitbake appligps
+   ```
 
 ---
 

@@ -44,6 +44,9 @@ target_link_libraries(AppliGPS PRIVATE
     Qt5::Network
 )
 
+# Cross-compilation instructions:
+# Usage: cmake -B build_aarch64 -DCMAKE_TOOLCHAIN_FILE=cmake/aarch64-toolchain.cmake
+
 # Automated Unit Tests
 enable_testing()
 
