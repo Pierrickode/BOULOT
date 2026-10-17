@@ -53,6 +53,35 @@ Item {
             }
         }
 
+        // Topographic Contour Line Overlay (rendered when topographicMode is active)
+        MapPolyline {
+            id: contourPolyline1
+            visible: topoBtn.topographicMode
+            line.width: 2
+            line.color: "#8B5A2B"
+            path: [
+                QtPositioning.coordinate(45.515, -73.590),
+                QtPositioning.coordinate(45.510, -73.585),
+                QtPositioning.coordinate(45.505, -73.580),
+                QtPositioning.coordinate(45.500, -73.585),
+                QtPositioning.coordinate(45.505, -73.595)
+            ]
+        }
+
+        MapPolyline {
+            id: contourPolyline2
+            visible: topoBtn.topographicMode
+            line.width: 2
+            line.color: "#CD853F"
+            path: [
+                QtPositioning.coordinate(48.810, 2.110),
+                QtPositioning.coordinate(48.805, 2.120),
+                QtPositioning.coordinate(48.800, 2.130),
+                QtPositioning.coordinate(48.795, 2.120),
+                QtPositioning.coordinate(48.800, 2.110)
+            ]
+        }
+
         // Waypoint Markers
         MapItemView {
             model: navCtrl.waypointModel
@@ -134,12 +163,30 @@ Item {
         }
     }
 
-    // Map controls overlay (Zoom In / Out / Recenter)
+    // Map controls overlay (Zoom In / Out / Recenter / Topographic Mode)
     Column {
         anchors.right: parent.right
         anchors.bottom: parent.bottom
         anchors.margins: 20
         spacing: 10
+
+        Button {
+            id: topoBtn
+            width: 48
+            height: 48
+            text: "⛰️"
+            font.pixelSize: 18
+            highlighted: topographicMode
+            property bool topographicMode: false
+            onClicked: {
+                topographicMode = !topographicMode;
+                if (topographicMode) {
+                    navCtrl.statusMessage("Mode Topographique & Lignes de Niveau activé", false);
+                } else {
+                    navCtrl.statusMessage("Mode Carte standard activé", false);
+                }
+            }
+        }
 
         Button {
             width: 48

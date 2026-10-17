@@ -18,6 +18,7 @@ private slots:
     void testLanguageManager();
     void testRoadRoutingEngine();
     void testLocalitySearch();
+    void testValhallaEngineAndAltitude();
 };
 
 void TestNavigation::testWaypointModelCRUD() {
@@ -136,6 +137,30 @@ void TestNavigation::testLocalitySearch() {
     QVariantMap first = results[0].toMap();
     QVERIFY(first["name"].toString().contains("Paris"));
     QVERIFY(first["latitude"].toDouble() > 0.0);
+
+    QVariantList mtlResults = searchMgr.searchLocalities("Montréal", 5);
+    QVERIFY(mtlResults.count() > 0);
+}
+
+void TestNavigation::testValhallaEngineAndAltitude() {
+    ValhallaEngine valhalla;
+    QVERIFY(valhalla.isMontrealAvailable());
+    QVERIFY(valhalla.isVersaillesAvailable());
+
+    // Elevation lookup
+    QGeoCoordinate mtlMontRoyal(45.5088, -73.5878);
+    double mtlAlt = valhalla.getElevationMeters(mtlMontRoyal);
+    QVERIFY(mtlAlt > 100.0);
+
+    QGeoCoordinate versailles(48.8049, 2.1204);
+    double versAlt = valhalla.getElevationMeters(versailles);
+    QVERIFY(versAlt > 100.0);
+
+    // GpsProvider altitude & cap/heading
+    GpsProvider gps;
+    gps.setManualPosition(45.5017, -73.5673, 180.0, 50.0);
+    QCOMPARE(gps.currentHeading(), 180.0);
+    QCOMPARE(gps.currentSpeedKmh(), 50.0);
 }
 
 QTEST_MAIN(TestNavigation)

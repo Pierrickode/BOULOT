@@ -17,19 +17,33 @@ Item {
             anchors.margins: 15
             spacing: 20
 
-            // Speedometer Widget
+            // Speedometer, Heading & Altitude Widget
             ColumnLayout {
                 spacing: 2
                 Text {
                     text: Math.round(navCtrl.gpsProvider.currentSpeedKmh)
                     color: "#00E676"
-                    font.pixelSize: 32
+                    font.pixelSize: 28
                     font.bold: true
                     Layout.alignment: Qt.AlignHCenter
                 }
                 Text {
                     text: "KM/H"
                     color: "#AAAAAAAA"
+                    font.pixelSize: 10
+                    font.bold: true
+                    Layout.alignment: Qt.AlignHCenter
+                }
+                Text {
+                    text: "Alt: " + Math.round(navCtrl.gpsProvider.currentAltitude) + " m"
+                    color: "#00E5FF"
+                    font.pixelSize: 11
+                    font.bold: true
+                    Layout.alignment: Qt.AlignHCenter
+                }
+                Text {
+                    text: "Cap: " + Math.round(navCtrl.gpsProvider.currentHeading) + "°"
+                    color: "#FFD600"
                     font.pixelSize: 11
                     font.bold: true
                     Layout.alignment: Qt.AlignHCenter

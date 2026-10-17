@@ -11,7 +11,8 @@ NavigationController::NavigationController(QObject *parent)
       m_waypointModel(new WaypointModel(this)),
       m_gpsProvider(new GpsProvider(this)),
       m_langMgr(new LanguageManager(this)),
-      m_searchMgr(new LocationSearchManager(this)) {
+      m_searchMgr(new LocationSearchManager(this)),
+      m_valhallaEngine(new ValhallaEngine(this)) {
 
     connect(m_waypointModel, &WaypointModel::waypointsChanged, this, &NavigationController::updateRouteCalculations);
     connect(m_gpsProvider, &GpsProvider::positionChanged, this, &NavigationController::updateNavigationState);
@@ -124,7 +125,7 @@ void NavigationController::loadDefaultDemoRoute() {
 }
 
 void NavigationController::updateRouteCalculations() {
-    m_roadPath = RouteEngine::calculateShortestRoadRoute(m_waypointModel->waypoints());
+    m_roadPath = m_valhallaEngine->calculateValhallaRoute(m_waypointModel->waypoints());
     if (m_roadPath.count() >= 2) {
         m_totalDistanceMeters = RouteEngine::calculatePathDistanceMeters(m_roadPath);
     } else {

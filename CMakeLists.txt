@@ -12,6 +12,7 @@ set(SOURCES
     src/WaypointModel.cpp
     src/GpxHandler.cpp
     src/RouteEngine.cpp
+    src/ValhallaEngine.cpp
     src/GpsProvider.cpp
     src/LanguageManager.cpp
     src/LocationSearchManager.cpp
@@ -23,6 +24,7 @@ set(HEADERS
     src/WaypointModel.h
     src/GpxHandler.h
     src/RouteEngine.h
+    src/ValhallaEngine.h
     src/GpsProvider.h
     src/LanguageManager.h
     src/LocationSearchManager.h

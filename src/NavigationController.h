@@ -7,6 +7,7 @@
 #include "GpsProvider.h"
 #include "LanguageManager.h"
 #include "LocationSearchManager.h"
+#include "ValhallaEngine.h"
 
 class NavigationController : public QObject {
     Q_OBJECT
@@ -14,6 +15,7 @@ class NavigationController : public QObject {
     Q_PROPERTY(GpsProvider* gpsProvider READ gpsProvider CONSTANT)
     Q_PROPERTY(LanguageManager* langMgr READ langMgr CONSTANT)
     Q_PROPERTY(LocationSearchManager* searchMgr READ searchMgr CONSTANT)
+    Q_PROPERTY(ValhallaEngine* valhallaEngine READ valhallaEngine CONSTANT)
     Q_PROPERTY(double totalDistance READ totalDistance NOTIFY routeUpdated)
     Q_PROPERTY(QString formattedTotalDistance READ formattedTotalDistance NOTIFY routeUpdated)
     Q_PROPERTY(QString formattedETA READ formattedETA NOTIFY routeUpdated)
@@ -33,6 +35,7 @@ public:
     GpsProvider* gpsProvider() const { return m_gpsProvider; }
     LanguageManager* langMgr() const { return m_langMgr; }
     LocationSearchManager* searchMgr() const { return m_searchMgr; }
+    ValhallaEngine* valhallaEngine() const { return m_valhallaEngine; }
 
     double totalDistance() const { return m_totalDistanceMeters; }
     QString formattedTotalDistance() const;
@@ -68,6 +71,7 @@ private:
     GpsProvider *m_gpsProvider{nullptr};
     LanguageManager *m_langMgr{nullptr};
     LocationSearchManager *m_searchMgr{nullptr};
+    ValhallaEngine *m_valhallaEngine{nullptr};
 
     double m_totalDistanceMeters{0.0};
     QList<QGeoCoordinate> m_roadPath;

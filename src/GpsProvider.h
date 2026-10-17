@@ -12,6 +12,7 @@ class GpsProvider : public QObject {
     Q_PROPERTY(QGeoCoordinate currentPosition READ currentPosition NOTIFY positionChanged)
     Q_PROPERTY(double currentSpeedKmh READ currentSpeedKmh NOTIFY speedChanged)
     Q_PROPERTY(double currentHeading READ currentHeading NOTIFY headingChanged)
+    Q_PROPERTY(double currentAltitude READ currentAltitude NOTIFY altitudeChanged)
     Q_PROPERTY(bool isSimulating READ isSimulating NOTIFY simulationStateChanged)
 
 public:
@@ -21,6 +22,7 @@ public:
     QGeoCoordinate currentPosition() const { return m_currentPosition; }
     double currentSpeedKmh() const { return m_currentSpeedKmh; }
     double currentHeading() const { return m_currentHeading; }
+    double currentAltitude() const { return m_currentAltitude; }
     bool isSimulating() const { return m_isSimulating; }
 
     Q_INVOKABLE void startLivePositioning();
@@ -35,6 +37,7 @@ signals:
     void positionChanged(const QGeoCoordinate &position);
     void speedChanged(double speedKmh);
     void headingChanged(double heading);
+    void altitudeChanged(double altitude);
     void simulationStateChanged(bool isSimulating);
     void simulationFinished();
 
@@ -43,9 +46,10 @@ private slots:
     void onSimulationStep();
 
 private:
-    QGeoCoordinate m_currentPosition{48.8566, 2.3522}; // Paris default
+    QGeoCoordinate m_currentPosition{48.8566, 2.3522, 35.0}; // Paris default with 35m altitude
     double m_currentSpeedKmh{0.0};
     double m_currentHeading{0.0};
+    double m_currentAltitude{35.0};
     bool m_isSimulating{false};
 
     QGeoPositionInfoSource *m_posSource{nullptr};

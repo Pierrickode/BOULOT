@@ -140,7 +140,15 @@ void RouteEngine::initRoadNetwork() {
         {20, QGeoCoordinate(48.5393, 2.6611), "Melun A6/N105"},
         {21, QGeoCoordinate(48.4022, 2.7006), "Fontainebleau A6/N7"},
         {22, QGeoCoordinate(48.9356, 2.3539), "Saint-Denis A1/A86"},
-        {23, QGeoCoordinate(49.0097, 2.5479), "Aéroport Roissy CDG A1"}
+        {23, QGeoCoordinate(49.0097, 2.5479), "Aéroport Roissy CDG A1"},
+
+        // Montreal & Quebec Region Nodes
+        {24, QGeoCoordinate(45.5017, -73.5532), "Montréal Vieux-Port"},
+        {25, QGeoCoordinate(45.5017, -73.5673), "Montréal Centre-Ville"},
+        {26, QGeoCoordinate(45.5088, -73.5878), "Montréal Mont-Royal"},
+        {27, QGeoCoordinate(45.4657, -73.7455), "Montréal Aéroport YUL"},
+        {28, QGeoCoordinate(45.5758, -73.7531), "Laval Centre"},
+        {29, QGeoCoordinate(45.5250, -73.5180), "Longueuil Metro"}
     };
 
     QList<QPair<int, int>> connections = {
@@ -153,7 +161,10 @@ void RouteEngine::initRoadNetwork() {
         // A6 / Orly / Évry / Fontainebleau
         {2, 17}, {3, 17}, {17, 18}, {17, 19}, {19, 20}, {20, 21}, {16, 19},
         // North A1 / Roissy
-        {5, 22}, {22, 23}
+        {5, 22}, {22, 23},
+
+        // Montreal Highway Network Connections
+        {24, 25}, {25, 26}, {25, 27}, {25, 29}, {26, 28}, {27, 28}
     };
 
     for (const auto &conn : connections) {

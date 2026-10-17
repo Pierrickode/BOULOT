@@ -103,10 +103,12 @@ void GpsProvider::setManualPosition(double lat, double lon, double heading, doub
     m_currentPosition = QGeoCoordinate(lat, lon);
     m_currentHeading = heading;
     m_currentSpeedKmh = speedKmh;
+    m_currentAltitude = m_currentPosition.altitude();
 
     emit positionChanged(m_currentPosition);
     emit headingChanged(m_currentHeading);
     emit speedChanged(m_currentSpeedKmh);
+    emit altitudeChanged(m_currentAltitude);
 }
 
 void GpsProvider::onPositionUpdated(const QGeoPositionInfo &info) {
@@ -122,6 +124,11 @@ void GpsProvider::onPositionUpdated(const QGeoPositionInfo &info) {
         if (info.hasAttribute(QGeoPositionInfo::Direction)) {
             m_currentHeading = info.attribute(QGeoPositionInfo::Direction);
             emit headingChanged(m_currentHeading);
+        }
+
+        if (info.coordinate().altitude() != m_currentAltitude) {
+            m_currentAltitude = info.coordinate().altitude();
+            emit altitudeChanged(m_currentAltitude);
         }
     }
 }
@@ -170,11 +177,19 @@ void GpsProvider::onSimulationStep() {
     double curLat = start.latitude() + (end.latitude() - start.latitude()) * m_simProgressInSegment;
     double curLon = start.longitude() + (end.longitude() - start.longitude()) * m_simProgressInSegment;
 
-    m_currentPosition = QGeoCoordinate(curLat, curLon);
+    double startAlt = start.altitude();
+    double endAlt = end.altitude();
+    if (qIsNaN(startAlt)) startAlt = 35.0;
+    if (qIsNaN(endAlt)) endAlt = 35.0;
+    double curAlt = startAlt + (endAlt - startAlt) * m_simProgressInSegment;
+
+    m_currentPosition = QGeoCoordinate(curLat, curLon, curAlt);
     m_currentHeading = RouteEngine::calculateBearingDegrees(start, end);
     m_currentSpeedKmh = m_simBaseSpeedKmh * m_simMultiplier;
+    m_currentAltitude = curAlt;
 
     emit positionChanged(m_currentPosition);
     emit headingChanged(m_currentHeading);
     emit speedChanged(m_currentSpeedKmh);
+    emit altitudeChanged(m_currentAltitude);
 }

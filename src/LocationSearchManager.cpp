@@ -33,7 +33,15 @@ void LocationSearchManager::initLocalitiesDatabase() {
         {"Strasbourg Cathédrale", "Bas-Rhin, Grand Est", 48.5734, 7.7521},
         {"Bordeaux Centre", "Gironde, Nouvelle-Aquitaine", 44.8378, -0.5792},
         {"Lille Grand Place", "Nord, Hauts-de-France", 50.6292, 3.0573},
-        {"Rennes Centre", "Ille-et-Vilaine, Bretagne", 48.1173, -1.6778}
+        {"Rennes Centre", "Ille-et-Vilaine, Bretagne", 48.1173, -1.6778},
+
+        // Montreal & Canada Region
+        {"Montréal Vieux-Port", "Québec, Canada", 45.5017, -73.5532},
+        {"Montréal Mont-Royal", "Québec, Canada", 45.5088, -73.5878},
+        {"Montréal Centre-Ville", "Québec, Canada", 45.5017, -73.5673},
+        {"Montréal Aéroport YUL", "Québec, Canada", 45.4657, -73.7455},
+        {"Laval Centre", "Québec, Canada", 45.5758, -73.7531},
+        {"Longueuil Metro", "Québec, Canada", 45.5250, -73.5180}
     };
 }
 
